@@ -350,14 +350,14 @@ export default function Dashboard() {
         <SchoolAdminStatus incidents={incidents} />
       )}
 
-      {isStaff && <StaffIncidentStatus incidents={incidents} connection={connection} />}
-
       {/* ── Quick Actions (Staff live-use only) ── */}
       {isStaff && (
         <div className="bg-white border border-gray-200 rounded-xl p-5 mb-6">
           <QuickActions />
         </div>
       )}
+
+      {isStaff && <StaffIncidentStatus incidents={incidents} connection={connection} />}
 
       {/* ── Unacknowledged alerts ── */}
       {!isStaff && unacked.length > 0 && (

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { archiveAPI, getIncidents, settingsAPI } from '../api/client'
 import { useAuth } from '../context/AuthContext'
 import { useSchools } from '../context/SchoolsContext'
+import StaffIncidents from './StaffIncidents'
 
 const priorityColors = {
   critical: 'bg-red-100 text-red-700',
@@ -133,6 +134,11 @@ function formatDuration(minutes) {
 }
 
 export default function Incidents() {
+  const { isStaff, currentUser } = useAuth()
+  return isStaff ? <StaffIncidents key={currentUser?.uid} /> : <IncidentLog />
+}
+
+function IncidentLog() {
   const navigate = useNavigate()
   const { authLoading, isCompanyAdmin, isSchoolAdmin, userRole } = useAuth()
   const { schools } = useSchools()
