@@ -76,6 +76,12 @@ function validateSchoolName(raw) {
   if (!name) {
     return { valid: false, error: 'School name is required.' }
   }
+  if (!/[\p{L}\p{N}]/u.test(name)) {
+    return {
+      valid: false,
+      error: 'School name must contain at least one letter or number.'
+    }
+  }
   // Control characters would corrupt display and break CSV/exports downstream.
   if (/[\x00-\x1f\x7f]/.test(name)) {
     return { valid: false, error: 'School name contains invalid characters.' }
