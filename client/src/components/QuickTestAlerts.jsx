@@ -116,7 +116,7 @@ export default function QuickTestAlerts({ locations = [] }) {
           adds them under Setup, Alert Types.
         </p>
       ) : (
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
           {types.map(type => (
             <button
               key={type.label}

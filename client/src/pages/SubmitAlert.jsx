@@ -147,20 +147,20 @@ export default function SubmitAlert() {
   }
 
   if (isPreviewing) return (
-    <div className="p-6 max-w-lg mx-auto">
+    <div className="p-6 max-w-3xl mx-auto">
       <h1 className="text-2xl font-bold text-gray-900 mb-2">Review alert</h1>
       <p className="text-sm text-gray-600 mb-6">Check these details before final submission.</p>
       <div className="bg-white border border-gray-200 rounded-xl p-6 space-y-4">
-        <dl className="space-y-3 text-sm">
+        <dl className="grid gap-3 sm:grid-cols-2 text-sm">
           <div><dt className="font-medium text-gray-600">Alert type</dt><dd>{alertTypes.find(t => t.value === form.type)?.label || form.type}</dd></div>
           <div><dt className="font-medium text-gray-600">Priority</dt><dd>{priorities.find(p => p.value === form.priority)?.label || form.priority}</dd></div>
           {isCompanyAdmin && <div><dt className="font-medium text-gray-600">School</dt><dd>{schools.find(s => s.id === form.schoolId)?.name || form.schoolId}</dd></div>}
           <div><dt className="font-medium text-gray-600">Location</dt><dd>{form.location}</dd></div>
-          <div><dt className="font-medium text-gray-600">Message</dt><dd className="whitespace-pre-wrap">{form.title}{form.description ? ` — ${form.description}` : ''}</dd></div>
+          <div className="sm:col-span-2"><dt className="font-medium text-gray-600">Message</dt><dd className="whitespace-pre-wrap">{form.title}{form.description ? ` — ${form.description}` : ''}</dd></div>
         </dl>
         <section aria-label="Notification recipients">
           <h2 className="font-semibold text-gray-900">Notification recipients ({recipients.length})</h2>
-          {recipients.length ? <ul className="mt-2 space-y-2 text-sm">{recipients.map((recipient, index) => (
+          {recipients.length ? <ul className="mt-2 grid gap-2 sm:grid-cols-2 text-sm">{recipients.map((recipient, index) => (
             <li key={`${recipient.email || recipient.phone}-${index}`} className="border rounded-lg p-2">
               <span className="font-medium">{recipient.name || recipient.email || recipient.phone}</span>
               <span className="block text-gray-600">{[recipient.email, recipient.phone].filter(Boolean).join(' · ')}</span>
@@ -187,7 +187,7 @@ export default function SubmitAlert() {
   )
 
   return (
-    <div className="p-6 max-w-lg mx-auto">
+    <div className="p-6 max-w-6xl mx-auto">
 
       {/* Header */}
       <div className="mb-6">
@@ -204,122 +204,127 @@ export default function SubmitAlert() {
       {/* Quick test alerts: School Admins only — Company Admins must pick a school first */}
       {isSchoolAdmin && !isCompanyAdmin && <QuickTestAlerts locations={locations} />}
 
-      {/* Form */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6 space-y-5">
+      {/* Form: what happened on the left, the details on the right; stacks on narrow screens */}
+      <div className="bg-white border border-gray-200 rounded-xl p-6 grid gap-6 lg:grid-cols-2">
+        <div className="space-y-5">
 
-        {isCompanyAdmin && <div>
-          <label htmlFor="alert-school" className="block text-sm font-medium text-gray-700 mb-1">School <span className="text-red-500">*</span></label>
-          <select id="alert-school" value={form.schoolId || ''} onChange={e => handleChange('schoolId', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
-            <option value="">Select a school</option>
-            {schools.filter(s => s.active !== false).map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-          </select>
-          {errors.schoolId && <p className="text-xs text-red-500 mt-1">{errors.schoolId}</p>}
-          {errors.schools && <p className="text-xs text-red-500 mt-1">{errors.schools}</p>}
-        </div>}
+          {isCompanyAdmin && <div>
+            <label htmlFor="alert-school" className="block text-sm font-medium text-gray-700 mb-1">School <span className="text-red-500">*</span></label>
+            <select id="alert-school" value={form.schoolId || ''} onChange={e => handleChange('schoolId', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
+              <option value="">Select a school</option>
+              {schools.filter(s => s.active !== false).map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+            </select>
+            {errors.schoolId && <p className="text-xs text-red-500 mt-1">{errors.schoolId}</p>}
+            {errors.schools && <p className="text-xs text-red-500 mt-1">{errors.schools}</p>}
+          </div>}
 
-        {/* Alert Type */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Alert Type <span className="text-red-500">*</span>
-          </label>
-          <div className="grid grid-cols-2 gap-2">
-            {alertTypes.map(t => (
-              <button
-                key={t.value}
-                type="button"
-                onClick={() => handleChange('type', t.value)}
-                className={`px-3 py-2 rounded-lg text-sm border transition-colors text-left ${form.type === t.value
-                    ? 'border-red-500 bg-red-50 text-red-700'
-                    : 'border-gray-200 hover:bg-gray-50 text-gray-700'
-                  }`}
-              >
-                {t.label}
-              </button>
-            ))}
+          {/* Alert Type */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Alert Type <span className="text-red-500">*</span>
+            </label>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {alertTypes.map(t => (
+                <button
+                  key={t.value}
+                  type="button"
+                  onClick={() => handleChange('type', t.value)}
+                  className={`px-3 py-2 rounded-lg text-sm border transition-colors text-left ${form.type === t.value
+                      ? 'border-red-500 bg-red-50 text-red-700'
+                      : 'border-gray-200 hover:bg-gray-50 text-gray-700'
+                    }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+            {errors.type && <p className="text-xs text-red-500 mt-1">{errors.type}</p>}
           </div>
-          {errors.type && <p className="text-xs text-red-500 mt-1">{errors.type}</p>}
-        </div>
 
-        {/* Priority */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Priority <span className="text-red-500">*</span>
-          </label>
-          <div className="grid grid-cols-2 gap-2">
-            {priorities.map(p => (
-              <button
-                key={p.value}
-                type="button"
-                onClick={() => handleChange('priority', p.value)}
-                className={`px-3 py-2 rounded-lg text-sm border transition-colors text-left ${form.priority === p.value
-                    ? 'border-red-500 bg-red-50 text-red-700'
-                    : 'border-gray-200 hover:bg-gray-50 text-gray-700'
-                  }`}
-              >
-                {p.label}
-              </button>
-            ))}
+          {/* Priority */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Priority <span className="text-red-500">*</span>
+            </label>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {priorities.map(p => (
+                <button
+                  key={p.value}
+                  type="button"
+                  onClick={() => handleChange('priority', p.value)}
+                  className={`px-3 py-2 rounded-lg text-sm border transition-colors text-left ${form.priority === p.value
+                      ? 'border-red-500 bg-red-50 text-red-700'
+                      : 'border-gray-200 hover:bg-gray-50 text-gray-700'
+                    }`}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+            {errors.priority && <p className="text-xs text-red-500 mt-1">{errors.priority}</p>}
           </div>
-          {errors.priority && <p className="text-xs text-red-500 mt-1">{errors.priority}</p>}
         </div>
 
-        {/* Title */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Title <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            value={form.title}
-            onChange={e => handleChange('title', e.target.value)}
-            placeholder="Brief description of the incident"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
-          />
-          {errors.title && <p className="text-xs text-red-500 mt-1">{errors.title}</p>}
-        </div>
+        <div className="flex flex-col gap-5">
 
-        {/* Location */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Location <span className="text-red-500">*</span>
-          </label>
-          <select
-            value={form.location}
-            onChange={e => handleChange('location', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+          {/* Title */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Title <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={form.title}
+              onChange={e => handleChange('title', e.target.value)}
+              placeholder="Brief description of the incident"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
+            {errors.title && <p className="text-xs text-red-500 mt-1">{errors.title}</p>}
+          </div>
+
+          {/* Location */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Location <span className="text-red-500">*</span>
+            </label>
+            <select
+              value={form.location}
+              onChange={e => handleChange('location', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+            >
+              <option value="">Select a location</option>
+              {locations.map(l => (
+                <option key={l} value={l}>{l}</option>
+              ))}
+            </select>
+            {errors.location && <p className="text-xs text-red-500 mt-1">{errors.location}</p>}
+          </div>
+
+          {/* Description: grows to fill the column so the button lines up with the left side */}
+          <div className="flex flex-col flex-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Description <span className="text-gray-400 text-xs">(optional)</span>
+            </label>
+            <textarea
+              value={form.description}
+              onChange={e => handleChange('description', e.target.value)}
+              placeholder="Any additional details about the incident..."
+              rows={4}
+              className="w-full flex-1 min-h-24 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500 resize-none"
+            />
+          </div>
+
+          {/* Submit */}
+          {errors.submit && <p className="text-xs text-red-500">{errors.submit}</p>}
+          <button
+            onClick={handlePreview}
+            disabled={isSubmitting}
+            className="w-full py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors"
           >
-            <option value="">Select a location</option>
-            {locations.map(l => (
-              <option key={l} value={l}>{l}</option>
-            ))}
-          </select>
-          {errors.location && <p className="text-xs text-red-500 mt-1">{errors.location}</p>}
+            {isSubmitting ? 'Loading preview...' : 'Preview alert'}
+          </button>
+
         </div>
-
-        {/* Description */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Description <span className="text-gray-400 text-xs">(optional)</span>
-          </label>
-          <textarea
-            value={form.description}
-            onChange={e => handleChange('description', e.target.value)}
-            placeholder="Any additional details about the incident..."
-            rows={3}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500 resize-none"
-          />
-        </div>
-
-        {/* Submit */}
-        {errors.submit && <p className="text-xs text-red-500">{errors.submit}</p>}
-        <button
-          onClick={handlePreview}
-          disabled={isSubmitting}
-          className="w-full py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors"
-        >
-          {isSubmitting ? 'Loading preview...' : 'Preview alert'}
-        </button>
-
       </div>
     </div>
   )
