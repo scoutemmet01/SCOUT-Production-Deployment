@@ -366,14 +366,14 @@ export default function Dashboard() {
         <SchoolAdminStatus incidents={incidents} />
       )}
 
-      {isStaff && <StaffIncidentStatus incidents={incidents} connection={connection} />}
-
       {/* ── Quick Actions (Staff live-use only) ── */}
       {isStaff && (
-        <div className="bg-white border border-gray-200 rounded-xl p-5 mb-6">
+        <div className="bg-white border border-gray-200 rounded-xl p-3 sm:p-4 mb-4">
           <QuickActions />
         </div>
       )}
+
+      {isStaff && <StaffIncidentStatus incidents={incidents} connection={connection} />}
 
       {/* ── Unacknowledged alerts ── */}
       {!isStaff && unacked.length > 0 && (
@@ -613,7 +613,7 @@ export default function Dashboard() {
 
       <section
         aria-label="Dashboard legend"
-        className="mt-6 rounded-lg border border-gray-200 bg-white p-4"
+        className={isStaff ? "mt-4 rounded-lg border border-gray-200 bg-white p-3" : "mt-6 rounded-lg border border-gray-200 bg-white p-4"}
       >
         <h2 className="text-sm font-semibold text-gray-900 mb-2">
           Dashboard Legend
