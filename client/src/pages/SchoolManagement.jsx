@@ -25,6 +25,10 @@ export default function SchoolManagement() {
       setFormError('School name is required.')
       return
     }
+  if (!/[\p{L}\p{N}]/u.test(name)) {
+    setFormError('School name must contain at least one letter or number.')
+    return
+  }
 
     setAdding(true)
     setFormError('')
@@ -44,6 +48,10 @@ export default function SchoolManagement() {
     const name = editSchoolName.trim()
     if (!name) {
       setFormError('School name is required.')
+      return
+    }
+    if (!/[\p{L}\p{N}]/u.test(name)) {
+      setFormError('School name must contain at least one letter or number.')
       return
     }
 

@@ -82,7 +82,10 @@ describe('Dashboard Page', () => {
     )
 
     expect(
-      await screen.findByText(/dashboard/i)
+      await screen.findByRole('heading', {
+        name: 'Dashboard',
+        level: 1,
+      })
     ).toBeInTheDocument()
   })
 

@@ -192,7 +192,11 @@ describe('Quick emergency alert', () => {
     auth.isSchoolAdmin = false
     auth.isStaff = true
 
-    render(<QuickActions />)
+    render(
+      <MemoryRouter>
+        <QuickActions />
+      </MemoryRouter>
+    )
     fireEvent.click(await screen.findByRole('button', { name: /emergency alert/i }))
     fireEvent.click((await screen.findByText('Fire')).closest('button'))
 
