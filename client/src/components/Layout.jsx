@@ -6,9 +6,11 @@ import {
   GraduationCap,
   LayoutDashboard,
   LogOut,
+  Menu,
   PlusCircle,
   Settings,
   Siren,
+  X,
   Zap,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
@@ -22,6 +24,19 @@ export default function Layout({ children }) {
 
   const [activeEmergency, setActiveEmergency] = useState(null)
   const [acknowledgedBy, setAcknowledgedBy] = useState([])
+  // Below the md breakpoint the sidebar is a drawer opened from the top bar.
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  useEffect(() => {
+    if (!menuOpen) return undefined
+
+    const handleKeyDown = event => {
+      if (event.key === 'Escape') setMenuOpen(false)
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [menuOpen])
 
   useEffect(() => {
     const loadActiveEmergency = () => {
@@ -130,9 +145,10 @@ export default function Layout({ children }) {
   const isAcknowledged = acknowledgedBy.length > 0
   const firstAck = acknowledgedBy[0]
   const displayName = currentUser.displayName || currentUser._profileName || currentUser.name || currentUser.email
+  const closeMenu = () => setMenuOpen(false)
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex flex-col md:flex-row h-screen bg-gray-50">
 
       {activeEmergency && (
         <div className={`fixed top-0 left-0 right-0 z-50 px-4 py-3 flex items-center justify-between shadow-lg ${
@@ -172,15 +188,54 @@ export default function Layout({ children }) {
         </div>
       )}
 
-      <div className={`w-56 bg-white border-r border-gray-200 flex flex-col ${activeEmergency ? 'mt-12' : ''}`}>
-        <Link to="/dashboard" className="flex items-center gap-2 px-4 py-5 border-b border-gray-200">
+      {/* Top bar, phones and small tablets only */}
+      <header className={`md:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-gray-200 shrink-0 ${activeEmergency ? 'mt-12' : ''}`}>
+        <Link to="/dashboard" className="flex items-center gap-2">
           <div className="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center">
             <span className="text-white text-sm">S</span>
           </div>
           <span className="font-bold text-gray-900">SCOUT</span>
         </Link>
+        <button
+          type="button"
+          onClick={() => setMenuOpen(true)}
+          aria-label="Open menu"
+          aria-expanded={menuOpen}
+          aria-controls="app-sidebar"
+          className="p-2 -mr-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
+        >
+          <Menu className="w-5 h-5" aria-hidden="true" />
+        </button>
+      </header>
 
-        <nav className="flex-1 p-3 space-y-4">
+      {menuOpen && (
+        <div className="md:hidden fixed inset-0 z-30 bg-black/40" onClick={closeMenu} aria-hidden="true" />
+      )}
+
+      <aside
+        id="app-sidebar"
+        className={`fixed bottom-0 left-0 z-40 w-64 max-w-[85vw] transition-transform duration-200 md:static md:z-auto md:w-56 md:max-w-none md:translate-x-0 md:transition-none bg-white border-r border-gray-200 flex flex-col ${
+          menuOpen ? 'translate-x-0 shadow-xl' : '-translate-x-full'
+        } ${activeEmergency ? 'top-12 md:mt-12' : 'top-0'}`}
+      >
+        <div className="flex items-center justify-between border-b border-gray-200">
+          <Link to="/dashboard" onClick={closeMenu} className="flex items-center gap-2 px-4 py-5">
+            <div className="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center">
+              <span className="text-white text-sm">S</span>
+            </div>
+            <span className="font-bold text-gray-900">SCOUT</span>
+          </Link>
+          <button
+            type="button"
+            onClick={closeMenu}
+            aria-label="Close menu"
+            className="md:hidden p-2 mr-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors"
+          >
+            <X className="w-5 h-5" aria-hidden="true" />
+          </button>
+        </div>
+
+        <nav className="flex-1 overflow-y-auto p-3 space-y-4">
           {navigationSections.map(section => {
             const visibleItems = section.items.filter(item => item.visible)
             if (visibleItems.length === 0) return null
@@ -197,6 +252,7 @@ export default function Layout({ children }) {
                       <Link
                         key={item.path}
                         to={item.path}
+                        onClick={closeMenu}
                         className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                           location.pathname === item.path
                             ? 'bg-red-50 text-red-600 font-medium'
@@ -238,9 +294,9 @@ export default function Layout({ children }) {
             Logout
           </button>
         </div>
-      </div>
+      </aside>
 
-      <div className={`flex-1 overflow-y-auto ${activeEmergency ? 'mt-12' : ''}`}>
+      <div className={`flex-1 min-w-0 overflow-y-auto ${activeEmergency ? 'md:mt-12' : ''}`}>
         {children}
       </div>
 
