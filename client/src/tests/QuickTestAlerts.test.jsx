@@ -204,4 +204,63 @@ describe('Quick emergency alert', () => {
     expect(screen.queryByText(/are you sure you want to proceed/i)).not.toBeInTheDocument()
     expect(screen.queryByPlaceholderText(/enter 000/i)).not.toBeInTheDocument()
   })
+
+  test('shows the configured emergency types immediately', async () => {
+    setupAPI.getAlertTypes.mockResolvedValue({ alertTypes: [
+      { label: 'Fire', emoji: '🔥', category: 'emergency' },
+      { label: 'Lockdown', emoji: '🔒', category: 'emergency' },
+    ] })
+    auth.isSchoolAdmin = false
+    auth.isStaff = true
+    render(<MemoryRouter><QuickActions /></MemoryRouter>)
+
+    fireEvent.click(await screen.findByRole('button', { name: /emergency alert/i }))
+
+    expect(await screen.findByRole('heading', { name: 'Select Emergency Type' })).toBeInTheDocument()
+    expect(screen.getByText('Fire')).toBeInTheDocument()
+    expect(screen.getByText('Lockdown')).toBeInTheDocument()
+  })
+
+  test('sends the alert without an emergency code', async () => {
+    const { apiCall } = await import('../api/client')
+    auth.isSchoolAdmin = false
+    auth.isStaff = true
+    render(<MemoryRouter><QuickActions /></MemoryRouter>)
+
+    fireEvent.click(await screen.findByRole('button', { name: /emergency alert/i }))
+    fireEvent.click((await screen.findByText('Fire')).closest('button'))
+
+    await waitFor(() => expect(apiCall).toHaveBeenCalled())
+    const payload = JSON.parse(apiCall.mock.calls[0][1].body)
+    expect(payload).not.toHaveProperty('code')
+    expect(payload.emergencyType).toBe('Fire')
+  })
+
+  test('creates a critical incident for the selected emergency type', async () => {
+    auth.isSchoolAdmin = false
+    auth.isStaff = true
+    render(<MemoryRouter><QuickActions /></MemoryRouter>)
+
+    fireEvent.click(await screen.findByRole('button', { name: /emergency alert/i }))
+    fireEvent.click((await screen.findByText('Fire')).closest('button'))
+
+    await waitFor(() => expect(incidentAPI.create).toHaveBeenCalledWith(expect.objectContaining({
+      type: 'fire',
+      priority: 'critical',
+      title: 'Fire alert',
+    })))
+  })
+
+  test('shows a clear error when the quick alert cannot be sent', async () => {
+    const { apiCall } = await import('../api/client')
+    apiCall.mockRejectedValueOnce(new Error('Could not send alert'))
+    auth.isSchoolAdmin = false
+    auth.isStaff = true
+    render(<MemoryRouter><QuickActions /></MemoryRouter>)
+
+    fireEvent.click(await screen.findByRole('button', { name: /emergency alert/i }))
+    fireEvent.click((await screen.findByText('Fire')).closest('button'))
+
+    expect(await screen.findByText('Could not send alert')).toBeInTheDocument()
+  })
 })

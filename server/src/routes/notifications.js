@@ -260,14 +260,7 @@ async function getNotificationSchoolContext(incidentId, senderProfile) {
 }
 
 router.post('/emergency', verifyToken, requireAlertSender, async (req, res) => {
-  const { code, emergencyType, location, message, incidentId } = req.body
-
-  if (code !== '000') {
-    return res.status(401).json({
-      success: false,
-      error: 'Invalid emergency code. Please enter 000 to confirm.',
-    })
-  }
+  const { emergencyType, location, message, incidentId } = req.body
 
   if (!emergencyType) {
     return res.status(400).json({
