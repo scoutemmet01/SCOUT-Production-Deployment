@@ -100,7 +100,6 @@ export default function QuickActions() {
       const data = await apiCall('/notifications/emergency', {
         method: 'POST',
         body: JSON.stringify({
-          code: '000',
           emergencyType: alertTypeLabel,
           location,
           message,
@@ -172,11 +171,7 @@ export default function QuickActions() {
     }
   }
 
-  const handleCodeSubmit = async (selectedType, code = '000') => {
-    if (code !== '000') {
-      setCodeError('Invalid code. Please enter 000 to confirm emergency.')
-      return
-    }
+  const handleCodeSubmit = async (selectedType) => {
 
     setLoading(true)
     setCodeError('')
@@ -188,7 +183,6 @@ export default function QuickActions() {
       const data = await apiCall('/notifications/emergency', {
         method: 'POST',
         body: JSON.stringify({
-          code,
           emergencyType: selectedType.value,
           location: '',
           message: customMessage || `Emergency alert triggered for ${selectedType.value}. All relevant staff have been notified.`,
@@ -240,7 +234,6 @@ export default function QuickActions() {
       const data = await apiCall('/notifications/emergency', {
         method: 'POST',
         body: JSON.stringify({
-          code: '000',
           emergencyType: selectedAction2Type.value,
           location: 'Dashboard quick action',
           message: `${selectedAction2Type.label} quick action triggered from dashboard.`,
