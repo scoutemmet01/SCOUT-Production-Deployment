@@ -74,3 +74,19 @@ The first frontend attempt failed before test execution because Windows prevente
 - The list contains matching records delivered by the existing stream. Archived records are available only when supplied by that stream.
 - Very large incident histories are not virtualized or paginated. The bounded scroll area keeps the page compact.
 - The production build warns about a large JavaScript bundle. No unrelated bundle refactor was made.
+
+## 10. Sprint 5 stash reconciliation
+
+The main Staff Dashboard UI implementation was already committed and pushed as `20d3a20`. The stash named `Sprint 5 Staff Dashboard UI changes` was inspected without applying it wholesale or removing it.
+
+Only independent missing improvements were carried over:
+
+- Explicit spaces between incident number, title and status make each row's accessible name readable.
+- The Staff legend no longer explains priority levels because compact rows do not display priorities. Admin legends retain their existing content.
+- Two focused tests cover readable row names, omitted detail/priority text and browser Back navigation from details.
+
+The branch's existing dropdown label, aria-controls attribute, responsive row basis, 18rem list height and other tests were preserved. The stashed alternative layout and KT document did not replace the existing implementation or documentation. QuickActions and alert submission code remain unchanged.
+
+Validation after reconciliation: **83 tests passed across 11 frontend suites**. This run included all nine frontend suites listed above, plus `SCRUM40EmergencyConfirmation.test.jsx` and `IncidentDetail.test.jsx`, with `--maxWorkers=1 --no-file-parallelism`. The focused Staff Dashboard suite now has seven tests. Targeted ESLint, production build and Git whitespace checks passed. The build still reports a main bundle over 500 kB. No authenticated browser or production alert check was performed.
+
+The package lock was not modified by this follow-up. The original stash remains available for later review.

@@ -628,7 +628,7 @@ export default function Dashboard() {
         </p>
 
         <p className="text-xs text-gray-600 mt-2">
-          <strong>Critical / High / Medium / Low:</strong> Incident priority levels.
+          {!isStaff && <><strong>Critical / High / Medium / Low:</strong> Incident priority levels.</>}
           {' '}<strong>TEST:</strong> Test incident, not a live emergency.
         </p>
       </section>

@@ -2,7 +2,7 @@
 import '@testing-library/jest-dom/vitest'
 import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, expect, test, vi } from 'vitest'
-import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom'
 import Dashboard from '../pages/Dashboard'
 const stream = vi.hoisted(() => ({ data: null, state: null, stop: vi.fn() }))
 vi.mock('../api/client', () => ({ incidentAPI: {}, settingsAPI: {}, subscribeToIncidents: (data, state) => { stream.data = data; stream.state = state; return stream.stop } }))
@@ -74,4 +74,31 @@ test('uses ID fallback, retains TEST marker and navigates to the existing detail
   expect(list.getByRole('link')).toHaveAttribute('href', '/incidents/old')
   fireEvent.click(list.getByRole('link'))
   expect(screen.getByRole('heading', { name: 'Existing incident details' })).toBeInTheDocument()
+})
+
+test('compact rows have spaced accessible fields and omit detailed incident content', () => {
+  load([{ ...incident, location: 'Library', priority: 'high' }])
+  select('acknowledged')
+  expect(screen.getByRole('link', { name: 'INC-001 Older active incident Acknowledged' })).toHaveAttribute('href', '/incidents/old')
+  expect(screen.queryByText(/Library|high priority/)).not.toBeInTheDocument()
+  expect(screen.queryByText(/Incident priority levels/)).not.toBeInTheDocument()
+})
+
+function DetailRoute() {
+  const navigate = useNavigate()
+  return <button onClick={() => navigate(-1)}>Browser back</button>
+}
+
+test('browser Back from incident details returns to the Staff Dashboard', () => {
+  render(<MemoryRouter><Routes>
+    <Route path="/" element={<Dashboard />} />
+    <Route path="/incidents/old" element={<DetailRoute />} />
+  </Routes></MemoryRouter>)
+  act(() => stream.data([incident]))
+  select('acknowledged')
+  fireEvent.click(screen.getByRole('link', { name: /Older active incident/ }))
+  fireEvent.click(screen.getByRole('button', { name: 'Browser back' }))
+  act(() => stream.data([incident]))
+  expect(screen.getByRole('heading', { name: 'Dashboard', level: 1 })).toBeInTheDocument()
+  expect(screen.getByRole('combobox', { name: 'Incident status' })).toHaveValue('')
 })
