@@ -1,19 +1,21 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 const statuses = {
-  triggered: ['Triggered', 'Awaiting acknowledgement.', 'bg-red-100 text-red-800'],
-  acknowledged: ['Acknowledged', 'The alert has been acknowledged.', 'bg-blue-100 text-blue-800'],
-  'in-progress': ['In progress', 'A response is underway.', 'bg-purple-100 text-purple-800'],
-  resolved: ['Resolved', 'The incident has been resolved.', 'bg-green-100 text-green-800'],
-  archived: ['Archived', 'The incident has been archived.', 'bg-gray-100 text-gray-700'],
+  triggered: ['Triggered', 'bg-red-100 text-red-800'],
+  acknowledged: ['Acknowledged', 'bg-blue-100 text-blue-800'],
+  'in-progress': ['In Progress', 'bg-purple-100 text-purple-800'],
+  resolved: ['Resolved', 'bg-green-100 text-green-800'],
+  archived: ['Archived', 'bg-gray-100 text-gray-700'],
 }
 
 export default function StaffIncidentStatus({ incidents, connection }) {
-  const sorted = [...incidents].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
-  const active = sorted.filter(item => !['resolved', 'archived'].includes(item.status))
-  const completed = sorted.filter(item => ['resolved', 'archived'].includes(item.status)).slice(0, 10)
+  const [selectedStatus, setSelectedStatus] = useState('')
+  const matching = incidents.filter(incident => incident.status === selectedStatus)
+    .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
+
   return (
-    <section aria-labelledby="incident-status-heading" className="mb-6">
+    <section aria-labelledby="incident-status-heading" className="mb-4 rounded-lg border border-gray-200 bg-white p-3 sm:p-4">
       <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
         <h2 id="incident-status-heading" className="font-semibold text-gray-900">My incident status</h2>
         <p role="status" className="text-xs text-gray-600">
@@ -22,57 +24,37 @@ export default function StaffIncidentStatus({ incidents, connection }) {
             : 'Connecting to live updates…'}
         </p>
       </div>
-      <p className="text-sm text-gray-600 mb-3">{active.length} active · All active incidents and your 10 most recent completed incidents.</p>
-      <div className="mb-3 space-y-1 text-xs text-gray-600">
-      <p>
-        Source: Incident records · Category: Active and completed incidents
-      </p>
-
-      <p>
-        Metric: {active.length} incidents are currently active
-        (not resolved or archived).
-      </p>
-
-      <p>
-        Display: All active incidents and up to 10 most recent
-        resolved or archived incidents.
-      </p>
-
-      <span
-        tabIndex={0}
-        title="Incident updates arrive through a live server connection. If disconnected, the system attempts to reconnect after 5 seconds."
-        aria-label="Data refresh information: Live incident updates arrive through a server connection. If disconnected, reconnection is attempted after 5 seconds."
-        className="inline-block cursor-help"
-      >
-        ⓘ Refresh information
-      </span>
-    </div>
-
-      {!sorted.length && <p className="p-5 bg-white border rounded-xl text-sm text-gray-600">
-        {connection === 'error' ? 'Unable to load incident status. Retrying automatically…' : 'No incidents to track yet.'}
-      </p>}
-      <div className="grid gap-3 sm:grid-cols-2">
-        {[...active, ...completed].map(incident => {
-          const [label, description, color] = statuses[incident.status] || ['Unknown', 'Status unavailable.', 'bg-gray-100 text-gray-700']
-          const actors = incident.status === 'in-progress' ? incident.inProgressBy : incident.status === 'acknowledged' ? incident.acknowledgedBy : []
-          const updated = incident.updatedAt || incident.createdAt
-          return (
-            <article key={incident.id} className="min-w-0 rounded-xl border border-gray-200 bg-white p-4">
-              <div className="flex flex-wrap items-start justify-between gap-2">
-                <Link to={`/incidents/${incident.id}`} className="min-w-0 break-words font-semibold text-gray-900 underline decoration-gray-300 hover:text-blue-700">
-                  {incident.incidentNumber && <span className="block text-xs text-gray-500">{incident.incidentNumber}</span>}
-                  {incident.title}
-                </Link>
-                <span className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${color}`}>{label}</span>
-              </div>
-              <p className="mt-2 text-sm text-gray-700 break-words">{incident.location} · {incident.priority} priority</p>
-              <p className="mt-2 text-sm text-gray-700">{description}</p>
-              {actors?.length > 0 && <p className="text-sm text-gray-600 break-words">Responders: {actors.map(actor => actor.name).filter(Boolean).join(', ')}</p>}
-              {updated && !Number.isNaN(Date.parse(updated)) && <p className="mt-2 text-xs text-gray-500">Updated <time dateTime={updated}>{new Date(updated).toLocaleString()}</time></p>}
-            </article>
-          )
-        })}
+      <div className="flex flex-wrap items-center gap-2">
+        <label htmlFor="staff-incident-status" className="text-sm font-medium text-gray-700">Incident status</label>
+        <select id="staff-incident-status" value={selectedStatus} onChange={event => setSelectedStatus(event.target.value)}
+          aria-controls="staff-incident-list"
+          className="max-w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="">Select a status</option>
+          {Object.entries(statuses).map(([value, [label]]) => <option key={value} value={value}>{label}</option>)}
+        </select>
+        {selectedStatus && <button onClick={() => setSelectedStatus('')} className="rounded px-2 py-2 text-sm text-blue-700 hover:underline">Close list</button>}
       </div>
+      {connection === 'error' && !incidents.length && <p className="mt-3 text-sm text-gray-600">Unable to load incident status. Retrying automatically…</p>}
+      {selectedStatus && (
+        <div id="staff-incident-list" className="mt-3">
+          <p role="status" className="mb-2 text-xs text-gray-600">{matching.length} {statuses[selectedStatus][0].toLowerCase()} incidents</p>
+          {matching.length ? (
+            <ul aria-label={`${statuses[selectedStatus][0]} incidents`} tabIndex={0}
+              className="max-h-72 overflow-y-auto overscroll-contain divide-y divide-gray-100 rounded-md border border-gray-200">
+              {matching.map(incident => (
+                <li key={incident.id}>
+                  <Link to={`/incidents/${incident.id}`} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-2 hover:bg-gray-50 focus-visible:outline-blue-500">
+                    <span className="min-w-0 break-all text-xs text-gray-500">{incident.incidentNumber || incident.id}</span>{' '}
+                    <span className="min-w-0 flex-1 basis-32 break-words text-sm font-medium text-gray-900">{incident.title || 'Untitled alert'}</span>{' '}
+                    {incident.isTest && <span className="rounded bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800">TEST</span>}
+                    <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${statuses[selectedStatus][1]}`}>{statuses[selectedStatus][0]}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : <p className="py-3 text-sm text-gray-600">No incidents match this status.</p>}
+        </div>
+      )}
     </section>
   )
 }
