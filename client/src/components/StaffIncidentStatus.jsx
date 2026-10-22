@@ -44,8 +44,8 @@ export default function StaffIncidentStatus({ incidents, connection }) {
               {matching.map(incident => (
                 <li key={incident.id}>
                   <Link to={`/incidents/${incident.id}`} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-2 hover:bg-gray-50 focus-visible:outline-blue-500">
-                    <span className="min-w-0 break-all text-xs text-gray-500">{incident.incidentNumber || incident.id}</span>
-                    <span className="min-w-0 flex-1 basis-32 break-words text-sm font-medium text-gray-900">{incident.title || 'Untitled alert'}</span>
+                    <span className="min-w-0 break-all text-xs text-gray-500">{incident.incidentNumber || incident.id}</span>{' '}
+                    <span className="min-w-0 flex-1 basis-32 break-words text-sm font-medium text-gray-900">{incident.title || 'Untitled alert'}</span>{' '}
                     {incident.isTest && <span className="rounded bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800">TEST</span>}
                     <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${statuses[selectedStatus][1]}`}>{statuses[selectedStatus][0]}</span>
                   </Link>
