@@ -72,6 +72,57 @@ First production release of SCOUT, deployed to Vercel (frontend) and Render (bac
 - Wider two-column Submit Alert form and a mobile navigation drawer.
 - Updated Staff dashboard.
 
+**Issues delivered in this release (Jira: Scout System v1.0.0)**
+
+Each issue can be opened at `https://rinadanwar.atlassian.net/browse/<key>`, for example https://rinadanwar.atlassian.net/browse/SCRUM-17.
+
+Stories
+
+- [SCRUM-9](https://rinadanwar.atlassian.net/browse/SCRUM-9) School Admin - add system-wide configuration settings
+- [SCRUM-10](https://rinadanwar.atlassian.net/browse/SCRUM-10) Emergency Type dropdown shows all types
+- [SCRUM-11](https://rinadanwar.atlassian.net/browse/SCRUM-11) Alert submission confirmation message
+- [SCRUM-12](https://rinadanwar.atlassian.net/browse/SCRUM-12) Quick-action buttons for alert testing
+- [SCRUM-14](https://rinadanwar.atlassian.net/browse/SCRUM-14) Load schools dynamically from database instead of hardcoded data
+- [SCRUM-15](https://rinadanwar.atlassian.net/browse/SCRUM-15) Fix Analytics page to display accurate data with proper filtering by school
+- [SCRUM-17](https://rinadanwar.atlassian.net/browse/SCRUM-17) Implement SMS and email notifications for triggered alerts
+- [SCRUM-18](https://rinadanwar.atlassian.net/browse/SCRUM-18) Allow staff to create custom quick alert types for frequent emergencies
+- [SCRUM-19](https://rinadanwar.atlassian.net/browse/SCRUM-19) Remove System-wide Config section from Setup Page
+- [SCRUM-20](https://rinadanwar.atlassian.net/browse/SCRUM-20) Create dedicated School Management page
+- [SCRUM-21](https://rinadanwar.atlassian.net/browse/SCRUM-21) Enable emergency alert submission in less than 3 clicks
+- [SCRUM-23](https://rinadanwar.atlassian.net/browse/SCRUM-23) Deploy SCOUT Application to Production Environment
+- [SCRUM-24](https://rinadanwar.atlassian.net/browse/SCRUM-24) Implement system-wide input validation
+- [SCRUM-25](https://rinadanwar.atlassian.net/browse/SCRUM-25) Clearly label and categorize dashboard data sources
+- [SCRUM-27](https://rinadanwar.atlassian.net/browse/SCRUM-27) Filter and sort dashboard data by school
+- [SCRUM-28](https://rinadanwar.atlassian.net/browse/SCRUM-28) Clearly indicate and filter Incident page data by school
+- [SCRUM-29](https://rinadanwar.atlassian.net/browse/SCRUM-29) Display unique Incident Number for each incident
+- [SCRUM-30](https://rinadanwar.atlassian.net/browse/SCRUM-30) Connect Setup Page directly to Submit Alert workflow
+- [SCRUM-31](https://rinadanwar.atlassian.net/browse/SCRUM-31) Preview alert before final submission
+- [SCRUM-32](https://rinadanwar.atlassian.net/browse/SCRUM-32) Improve filtering on Notifications page
+- [SCRUM-33](https://rinadanwar.atlassian.net/browse/SCRUM-33) Keep incident status visible on Staff dashboard
+- [SCRUM-34](https://rinadanwar.atlassian.net/browse/SCRUM-34) Simplify Staff Incidents page
+- [SCRUM-36](https://rinadanwar.atlassian.net/browse/SCRUM-36) Delete an incident logged by mistake
+
+Bugs
+
+- [SCRUM-37](https://rinadanwar.atlassian.net/browse/SCRUM-37) Renaming an alert type stops its notifications
+- [SCRUM-38](https://rinadanwar.atlassian.net/browse/SCRUM-38) Recipient preview shows people who will not actually be contacted
+- [SCRUM-39](https://rinadanwar.atlassian.net/browse/SCRUM-39) Two alert types with the same name: one cannot be set up
+- [SCRUM-40](https://rinadanwar.atlassian.net/browse/SCRUM-40) Emergency button sends the alert but shows nothing on screen
+- [SCRUM-41](https://rinadanwar.atlassian.net/browse/SCRUM-41) You can create the same incident twice from the confirmation box
+- [SCRUM-42](https://rinadanwar.atlassian.net/browse/SCRUM-42) Test alerts are counted as real ones on the dashboard
+- [SCRUM-43](https://rinadanwar.atlassian.net/browse/SCRUM-43) Delete button is shown, then the server refuses the delete
+- [SCRUM-44](https://rinadanwar.atlassian.net/browse/SCRUM-44) Duplicate location names are accepted in Setup
+- [SCRUM-45](https://rinadanwar.atlassian.net/browse/SCRUM-45) School Management accepts names containing only special characters
+- [SCRUM-46](https://rinadanwar.atlassian.net/browse/SCRUM-46) School filter does not show all registered schools
+- [SCRUM-47](https://rinadanwar.atlassian.net/browse/SCRUM-47) Fix Alert Name Validation in Alert Configuration
+- [SCRUM-48](https://rinadanwar.atlassian.net/browse/SCRUM-48) Fix incorrect acknowledgement message for resolved incidents
+- [SCRUM-51](https://rinadanwar.atlassian.net/browse/SCRUM-51) Add mobile navigation drawer to the app layout
+
+Tasks
+
+- [SCRUM-49](https://rinadanwar.atlassian.net/browse/SCRUM-49) Simplify Staff Dashboard UI and Improve Quick Alerts Accessibility
+- [SCRUM-50](https://rinadanwar.atlassian.net/browse/SCRUM-50) Use the width of the screen so pages need less vertical scrolling
+
 **Known issues and limitations**
 
 - SMS needs ClickSend credit. A trial account can only text numbers verified in the ClickSend dashboard, and messages are rejected (and shown as failed) once the credit runs out.
@@ -414,43 +465,44 @@ Dates are when the work was merged to `main`. Pull request numbers refer to the 
 
 ### v1.0.0 (18 to 23 October 2026) — production release
 
-- Email and SMS notifications rebuilt: Brevo API for email, ClickSend REST API for SMS, per-channel delivery tracking, failure reasons, delivery-receipt webhooks and Retry (#14)
-- Notifications page filtering by school, type, channel, status and date (SCRUM-32, #14), and the full school list in its school filter (#15)
+- Email and SMS notifications rebuilt: Brevo API for email, ClickSend REST API for SMS, per-channel delivery tracking, failure reasons, delivery-receipt webhooks and Retry (SCRUM-17, #14)
+- Notifications page filtering by school, type, channel, status and date (SCRUM-32, #14), and the full school list in its school filter (SCRUM-46, #15)
 - Duplicate location names prevented (SCRUM-44, #13)
-- School name validation (SCRUM-45, #18) and alert type name validation (#16)
+- School name validation (SCRUM-45, #18) and alert type name validation (SCRUM-47, #16)
 - Two alert types with the same name refused, recipient lists kept when an alert type is renamed, and the recipient preview using the same lookup as the real send (SCRUM-37 to 39, #10)
 - The same alert can no longer be submitted twice, and a confirmation is shown when an incident fails to save (SCRUM-40, SCRUM-41, #9)
 - Test alerts left out of dashboard counts and cards (SCRUM-42, #8, #12); decimal timeouts refused and a blank timeout uses the default (#12)
 - A warning shown before deleting a live alert instead of refusing it (SCRUM-43, #11)
-- Help banner hidden for resolved alerts (#17)
-- The 000 confirmation code removed from quick alerts, with improved tests (#21)
+- Acknowledgement help banner no longer shown for resolved incidents (SCRUM-48, #17)
+- The 000 confirmation code removed from quick alerts, with improved tests (SCRUM-21, #21)
 - Tests for dashboard data sources (SCRUM-25, #20) and School Management (#22)
-- Updated Staff dashboard UI and accessibility (#23)
-- Wider two-column Submit Alert form and a mobile navigation drawer
+- Simplified Staff dashboard UI and more accessible quick alerts (SCRUM-49, #23)
+- Wider two-column Submit Alert form (SCRUM-50) and a mobile navigation drawer (SCRUM-51)
+- Production deployment on Vercel, Render and Firebase (SCRUM-23)
 
 ### v0.5.0 (10 to 12 October 2026) — move to the production repository
 
 - CORS configured for the production frontend (#1)
 - Test setup fix for browser storage (#2)
-- A confirmation shown after every way of submitting an alert (#3)
-- Delete an incident raised by mistake: overdue unacknowledged alerts can be deleted, School Admins can only delete their own test alerts, and a confirmation is shown afterwards (#4)
+- A confirmation shown after every way of submitting an alert (SCRUM-11, #3)
+- Delete an incident raised by mistake: overdue unacknowledged alerts can be deleted, School Admins can only delete their own test alerts, and a confirmation is shown afterwards (SCRUM-36, #4)
 - Simplified Staff Incidents page (SCRUM-34, #5)
 - School filtering, alphabetical sorting and incident counts (SCRUM-28, #6)
 - Dashboard data sources, metric explanations and legends (SCRUM-25, #7)
 
 ### v0.4.0 (24 August to 29 September 2026)
 
-- Schools loaded from the database instead of being hard-coded (#82)
-- School Admin alert type dropdown (#83), system-wide input validation (#84) and incident numbers (SCRUM-29, #85)
-- Submit Alert setup (SCRUM-30, #86) and a preview of the alert before submitting (#6)
-- Overdue timeout set per school by the School Admin (#1) and the retention setting moved to School Admin setup (SCRUM-19, #8)
-- Quick emergency alert submission (#2)
-- Dashboard school filter and sorting (SCRUM-27, #3, #4) and Analytics accuracy fixes with a school filter (#89)
+- Schools loaded from the database instead of being hard-coded (SCRUM-14, #82)
+- Emergency type dropdown showing all types (SCRUM-10, #83), system-wide input validation (SCRUM-24, #84) and incident numbers (SCRUM-29, #85)
+- Submit Alert setup (SCRUM-30, #86) and a preview of the alert before submitting (SCRUM-31, #6)
+- Overdue timeout set per school by the School Admin (SCRUM-9, #1) and the retention setting moved to School Admin setup (SCRUM-19, #8)
+- Quick emergency alert submission (SCRUM-21, #2)
+- Dashboard school filter and sorting (SCRUM-27, #3, #4) and Analytics accuracy fixes with a school filter (SCRUM-15, #89)
 - Validation tests (#5) and tests for SCRUM-27 and SCRUM-29 (#7)
 - Quick test alert buttons in Alert Testing, a preview of routed recipients and a TEST badge on test incidents (SCRUM-12, #9)
-- School Management page (#10)
-- Incident status kept visible on the Staff dashboard (#11)
-- Personal quick alert shortcuts for staff (#91)
+- School Management page (SCRUM-20, #10)
+- Incident status kept visible on the Staff dashboard (SCRUM-33, #11)
+- Personal quick alert shortcuts for staff (SCRUM-18, #91)
 
 ### v0.3.0 (28 May to 5 June 2026)
 
